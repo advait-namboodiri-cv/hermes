@@ -7,12 +7,36 @@ import LookingUp from "./components/screens/LookingUp";
 import Definition from "./components/screens/Definition";
 import NotFound from "./components/screens/NotFound";
 import Settings from "./components/screens/Settings";
+import Journal from "./components/screens/Journal";
 import type {
   Definition as Def,
   Flow,
   Screen,
   Settings as SettingsType,
 } from "./types";
+
+// Placeholder data until the persistent journal store is wired in.
+const SAMPLE_GROUPS = [
+  {
+    label: "Today",
+    meta: "5 words · 47 min",
+    rows: [
+      { id: "1", word: "ephemeral", gloss: "adjective · lasting a very short time", time: "2:31 pm" },
+      { id: "2", word: "sonder", gloss: "noun · the realization each passerby has a life", time: "2:24 pm" },
+      { id: "3", word: "petrichor", gloss: "noun · the smell of rain on dry earth", time: "2:09 pm" },
+      { id: "4", word: "liminal", gloss: "adjective · occupying a threshold", time: "1:58 pm" },
+      { id: "5", word: "quotidian", gloss: "adjective · daily; ordinary", time: "1:44 pm" },
+    ],
+  },
+  {
+    label: "Yesterday",
+    meta: "3 words · 33 min",
+    rows: [
+      { id: "6", word: "susurrus", gloss: "noun · a soft murmuring or rustling", time: "9:48 pm" },
+      { id: "7", word: "apricity", gloss: "noun · the warmth of the sun in winter", time: "9:31 pm" },
+    ],
+  },
+];
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -92,6 +116,13 @@ export default function App() {
 
           {screen === "settings" && (
             <Settings settings={settings} voices={[]} onChange={onSettings} />
+          )}
+          {screen === "journal" && (
+            <Journal
+              groups={SAMPLE_GROUPS}
+              onTab={(t) => setScreen(t)}
+              onReplay={() => {}}
+            />
           )}
         </div>
       </div>
