@@ -1,5 +1,7 @@
 interface ListeningProps {
   wakeWord: string;
+  transcript?: string;
+  error?: string | null;
 }
 
 const ring: React.CSSProperties = {
@@ -11,7 +13,11 @@ const ring: React.CSSProperties = {
   animation: "ringpulse 4.5s ease-out infinite",
 };
 
-export default function Listening({ wakeWord }: ListeningProps) {
+export default function Listening({
+  wakeWord,
+  transcript,
+  error,
+}: ListeningProps) {
   return (
     <div
       className="fade-up"
@@ -65,12 +71,30 @@ export default function Listening({ wakeWord }: ListeningProps) {
         style={{
           position: "absolute",
           bottom: 42,
+          left: 0,
+          right: 0,
+          textAlign: "center",
           font: "400 15px 'Hanken Grotesk'",
           color: "#56534d",
+          padding: "0 40px",
         }}
       >
-        engages on{" "}
-        <span style={{ color: "#94918a", fontWeight: 500 }}>“{wakeWord}”</span>
+        {error === "unsupported" ? (
+          <span style={{ color: "#c08c6a" }}>
+            speech recognition isn’t available in this browser — try Chrome
+          </span>
+        ) : transcript ? (
+          <span style={{ color: "#74716a", fontStyle: "italic" }}>
+            “{transcript}”
+          </span>
+        ) : (
+          <>
+            engages on{" "}
+            <span style={{ color: "#94918a", fontWeight: 500 }}>
+              “{wakeWord}”
+            </span>
+          </>
+        )}
       </div>
     </div>
   );

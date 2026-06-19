@@ -1,9 +1,10 @@
 interface HomeProps {
   onBegin: () => void;
+  begun?: boolean;
   resumeHint?: string;
 }
 
-export default function Home({ onBegin, resumeHint }: HomeProps) {
+export default function Home({ onBegin, begun, resumeHint }: HomeProps) {
   return (
     <div
       className="fade-up"
@@ -92,7 +93,7 @@ export default function Home({ onBegin, resumeHint }: HomeProps) {
         onMouseEnter={(e) => (e.currentTarget.style.filter = "brightness(1.06)")}
         onMouseLeave={(e) => (e.currentTarget.style.filter = "none")}
       >
-        Begin session
+        {begun ? "Resume session" : "Begin session"}
       </button>
       {resumeHint && (
         <div

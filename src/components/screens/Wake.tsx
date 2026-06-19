@@ -1,8 +1,9 @@
 interface WakeProps {
   wakeWord: string;
+  heard?: string;
 }
 
-export default function Wake({ wakeWord }: WakeProps) {
+export default function Wake({ wakeWord, heard }: WakeProps) {
   return (
     <div
       className="fade-up"
@@ -84,7 +85,7 @@ export default function Wake({ wakeWord }: WakeProps) {
           Heard
         </span>
         <span style={{ font: "400 18px 'Hanken Grotesk'", color: "#efece4" }}>
-          “{wakeWord}…”
+          “{heard?.trim() || wakeWord}…”
         </span>
       </div>
     </div>

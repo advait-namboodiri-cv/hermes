@@ -3,6 +3,8 @@ import type { Definition as Def } from "../../types";
 interface DefinitionProps {
   def: Def;
   stopWord: string;
+  onReplay?: () => void;
+  onSentence?: () => void;
 }
 
 function Equalizer() {
@@ -30,9 +32,16 @@ const chip: React.CSSProperties = {
   padding: "9px 20px",
   color: "#b6b3aa",
   font: "400 15px 'Hanken Grotesk'",
+  background: "transparent",
+  cursor: "pointer",
 };
 
-export default function Definition({ def, stopWord }: DefinitionProps) {
+export default function Definition({
+  def,
+  stopWord,
+  onReplay,
+  onSentence,
+}: DefinitionProps) {
   return (
     <div
       className="fade-up"
@@ -158,8 +167,14 @@ export default function Definition({ def, stopWord }: DefinitionProps) {
         }}
       >
         <div style={{ display: "flex", gap: 12 }}>
-          <span style={chip}>↺ “again”</span>
-          <span style={chip}>¶ “sentence”</span>
+          <button style={chip} onClick={onReplay}>
+            ↺ “again”
+          </button>
+          {def.example && (
+            <button style={chip} onClick={onSentence}>
+              ¶ “sentence”
+            </button>
+          )}
         </div>
         <span style={{ font: "400 15px 'Hanken Grotesk'", color: "#76736c" }}>
           say{" "}

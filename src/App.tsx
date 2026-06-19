@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Header from "./components/Header";
 import Home from "./components/screens/Home";
 import Listening from "./components/screens/Listening";
@@ -9,63 +9,43 @@ import NotFound from "./components/screens/NotFound";
 import Settings from "./components/screens/Settings";
 import Journal from "./components/screens/Journal";
 import Records from "./components/screens/Records";
-import type {
-  Definition as Def,
-  Flow,
-  Screen,
-  Settings as SettingsType,
-} from "./types";
-
-// Placeholder data until the persistent journal store is wired in.
-const SAMPLE_GROUPS = [
-  {
-    label: "Today",
-    meta: "5 words · 47 min",
-    rows: [
-      { id: "1", word: "ephemeral", gloss: "adjective · lasting a very short time", time: "2:31 pm" },
-      { id: "2", word: "sonder", gloss: "noun · the realization each passerby has a life", time: "2:24 pm" },
-      { id: "3", word: "petrichor", gloss: "noun · the smell of rain on dry earth", time: "2:09 pm" },
-      { id: "4", word: "liminal", gloss: "adjective · occupying a threshold", time: "1:58 pm" },
-      { id: "5", word: "quotidian", gloss: "adjective · daily; ordinary", time: "1:44 pm" },
-    ],
-  },
-  {
-    label: "Yesterday",
-    meta: "3 words · 33 min",
-    rows: [
-      { id: "6", word: "susurrus", gloss: "noun · a soft murmuring or rustling", time: "9:48 pm" },
-      { id: "7", word: "apricity", gloss: "noun · the warmth of the sun in winter", time: "9:31 pm" },
-    ],
-  },
-];
-
-const SAMPLE_PERDAY = [
-  { label: "M", count: 6 },
-  { label: "T", count: 11 },
-  { label: "W", count: 4 },
-  { label: "T", count: 18 },
-  { label: "F", count: 9 },
-  { label: "S", count: 13 },
-  { label: "S", count: 7 },
-];
+import { useHermes } from "./hooks/useHermes";
+import {
+  groupForJournal,
+  loadEntries,
+  recordsSummary,
+  findEntry,
+} from "./lib/journal/store";
+import type { Screen } from "./types";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
-  const [flow, setFlow] = useState<Flow>("listening");
-  const [lookupWord] = useState("");
-  const [def] = useState<Def | null>(null);
-  const [settings, setSettings] = useState<SettingsType>({
-    wakeWord: "Hermes",
-    stopWord: "Cipher",
-    fuzzyMatching: true,
-    voiceURI: "",
-    speechRate: 1,
-  });
+  const {
+    state,
+    settings,
+    voices,
+    updateSettings,
+    start,
+    replay,
+    readSentence,
+    play,
+  } = useHermes();
 
-  const wakeWord = settings.wakeWord;
-  const stopWord = settings.stopWord;
-  const onSettings = (patch: Partial<SettingsType>) =>
-    setSettings((s) => ({ ...s, ...patch }));
+  // Recompute journal/records whenever a new word lands or we open the view.
+  const entries = useMemo(
+    () => loadEntries(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.definition, screen]
+  );
+  const groups = useMemo(() => groupForJournal(entries), [entries]);
+  const records = useMemo(() => recordsSummary(entries), [entries]);
+
+  const wordsToday = groups[0]?.label === "Today" ? groups[0].rows.length : 0;
+  const resumeHint = state.listening
+    ? `listening · ${wordsToday} word${wordsToday === 1 ? "" : "s"} today`
+    : entries.length > 0
+      ? `${entries.length} words logged`
+      : undefined;
 
   return (
     <div
@@ -101,45 +81,70 @@ export default function App() {
         <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
           {screen === "home" && (
             <Home
+              begun={state.listening}
               onBegin={() => {
+                if (!state.listening) start();
                 setScreen("session");
-                setFlow("listening");
               }}
-              resumeHint="resume last · 12 words, 47 min"
+              resumeHint={resumeHint}
             />
           )}
 
-          {screen === "session" && flow === "listening" && (
-            <Listening wakeWord={wakeWord} />
+          {screen === "session" && state.flow === "listening" && (
+            <Listening
+              wakeWord={settings.wakeWord}
+              transcript={state.transcript}
+              error={state.error}
+            />
           )}
-          {screen === "session" && flow === "wake" && (
-            <Wake wakeWord={wakeWord} />
+          {screen === "session" && state.flow === "wake" && (
+            <Wake wakeWord={settings.wakeWord} heard={state.transcript} />
           )}
-          {screen === "session" && flow === "fetching" && (
-            <LookingUp word={lookupWord} />
+          {screen === "session" && state.flow === "fetching" && (
+            <LookingUp word={state.lookupWord} />
           )}
-          {screen === "session" && flow === "definition" && def && (
-            <Definition def={def} stopWord={stopWord} />
+          {screen === "session" && state.flow === "definition" && state.definition && (
+            <Definition
+              def={state.definition}
+              stopWord={settings.stopWord}
+              onReplay={replay}
+              onSentence={readSentence}
+            />
           )}
-          {screen === "session" && flow === "notfound" && (
-            <NotFound word={lookupWord} />
+          {screen === "session" && state.flow === "notfound" && (
+            <NotFound word={state.lookupWord} />
+          )}
+          {/* If a session view is requested but flow is idle, show listening shell. */}
+          {screen === "session" && state.flow === "idle" && (
+            <Listening
+              wakeWord={settings.wakeWord}
+              transcript={state.transcript}
+              error={state.error}
+            />
           )}
 
           {screen === "settings" && (
-            <Settings settings={settings} voices={[]} onChange={onSettings} />
+            <Settings
+              settings={settings}
+              voices={voices}
+              onChange={updateSettings}
+            />
           )}
           {screen === "journal" && (
             <Journal
-              groups={SAMPLE_GROUPS}
+              groups={groups}
               onTab={(t) => setScreen(t)}
-              onReplay={() => {}}
+              onReplay={(id) => {
+                const e = findEntry(id);
+                if (e) play(e);
+              }}
             />
           )}
           {screen === "records" && (
             <Records
-              wordsThisWeek={68}
-              hoursRead={5.2}
-              perDay={SAMPLE_PERDAY}
+              wordsThisWeek={records.wordsThisWeek}
+              hoursRead={records.hoursRead}
+              perDay={records.perDay}
               onTab={(t) => setScreen(t)}
             />
           )}
