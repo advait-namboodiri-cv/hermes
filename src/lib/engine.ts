@@ -135,6 +135,12 @@ export class HermesEngine {
     this.speak(`${this.lastDefinition.word}. ${this.lastDefinition.definition}`);
   }
 
+  /** Replay a specific logged entry (Journal replay button). */
+  playDefinition(def: Definition) {
+    this.lastDefinition = def;
+    this.speak(`${def.word}. ${def.definition}`);
+  }
+
   /** "sentence" — read the example sentence, if any. */
   readSentence() {
     const ex = this.lastDefinition?.example;
