@@ -6,15 +6,31 @@ import Wake from "./components/screens/Wake";
 import LookingUp from "./components/screens/LookingUp";
 import Definition from "./components/screens/Definition";
 import NotFound from "./components/screens/NotFound";
-import type { Definition as Def, Flow, Screen } from "./types";
+import Settings from "./components/screens/Settings";
+import type {
+  Definition as Def,
+  Flow,
+  Screen,
+  Settings as SettingsType,
+} from "./types";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [flow, setFlow] = useState<Flow>("listening");
   const [lookupWord] = useState("");
   const [def] = useState<Def | null>(null);
-  const wakeWord = "Hermes";
-  const stopWord = "Cipher";
+  const [settings, setSettings] = useState<SettingsType>({
+    wakeWord: "Hermes",
+    stopWord: "Cipher",
+    fuzzyMatching: true,
+    voiceURI: "",
+    speechRate: 1,
+  });
+
+  const wakeWord = settings.wakeWord;
+  const stopWord = settings.stopWord;
+  const onSettings = (patch: Partial<SettingsType>) =>
+    setSettings((s) => ({ ...s, ...patch }));
 
   return (
     <div
@@ -72,6 +88,10 @@ export default function App() {
           )}
           {screen === "session" && flow === "notfound" && (
             <NotFound word={lookupWord} />
+          )}
+
+          {screen === "settings" && (
+            <Settings settings={settings} voices={[]} onChange={onSettings} />
           )}
         </div>
       </div>
