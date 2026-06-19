@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "./components/Header";
+import CommandFlash from "./components/CommandFlash";
 import Home from "./components/screens/Home";
 import Listening from "./components/screens/Listening";
 import Wake from "./components/screens/Wake";
@@ -40,6 +41,20 @@ export default function App() {
   const groups = useMemo(() => groupForJournal(entries), [entries]);
   const records = useMemo(() => recordsSummary(entries), [entries]);
 
+  // Bring the live session forward when a voice command fires from elsewhere.
+  const prevFlow = useRef(state.flow);
+  useEffect(() => {
+    const active =
+      state.flow === "wake" ||
+      state.flow === "fetching" ||
+      state.flow === "definition" ||
+      state.flow === "notfound";
+    if (active && prevFlow.current !== state.flow && screen !== "session") {
+      setScreen("session");
+    }
+    prevFlow.current = state.flow;
+  }, [state.flow, screen]);
+
   const wordsToday = groups[0]?.label === "Today" ? groups[0].rows.length : 0;
   const resumeHint = state.listening
     ? `listening · ${wordsToday} word${wordsToday === 1 ? "" : "s"} today`
@@ -79,6 +94,7 @@ export default function App() {
           onSettings={() => setScreen("settings")}
         />
         <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+          <CommandFlash command={state.lastCommand} seq={state.commandSeq} />
           {screen === "home" && (
             <Home
               begun={state.listening}
