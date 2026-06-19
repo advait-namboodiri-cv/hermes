@@ -8,6 +8,7 @@ import Definition from "./components/screens/Definition";
 import NotFound from "./components/screens/NotFound";
 import Settings from "./components/screens/Settings";
 import Journal from "./components/screens/Journal";
+import Records from "./components/screens/Records";
 import type {
   Definition as Def,
   Flow,
@@ -36,6 +37,16 @@ const SAMPLE_GROUPS = [
       { id: "7", word: "apricity", gloss: "noun · the warmth of the sun in winter", time: "9:31 pm" },
     ],
   },
+];
+
+const SAMPLE_PERDAY = [
+  { label: "M", count: 6 },
+  { label: "T", count: 11 },
+  { label: "W", count: 4 },
+  { label: "T", count: 18 },
+  { label: "F", count: 9 },
+  { label: "S", count: 13 },
+  { label: "S", count: 7 },
 ];
 
 export default function App() {
@@ -122,6 +133,14 @@ export default function App() {
               groups={SAMPLE_GROUPS}
               onTab={(t) => setScreen(t)}
               onReplay={() => {}}
+            />
+          )}
+          {screen === "records" && (
+            <Records
+              wordsThisWeek={68}
+              hoursRead={5.2}
+              perDay={SAMPLE_PERDAY}
+              onTab={(t) => setScreen(t)}
             />
           )}
         </div>
