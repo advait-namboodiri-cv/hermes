@@ -4,22 +4,12 @@ interface LookingUpProps {
 
 export default function LookingUp({ word }: LookingUpProps) {
   return (
-    <div
-      className="fade-up"
-      style={{
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <div className="screen fade-up">
       <div
         style={{
           position: "absolute",
-          width: 560,
-          height: 560,
+          width: "min(560px, 110vmin)",
+          height: "min(560px, 110vmin)",
           borderRadius: "50%",
           background: "radial-gradient(circle,rgba(216,177,90,.06),transparent 62%)",
           filter: "blur(8px)",
@@ -39,11 +29,13 @@ export default function LookingUp({ word }: LookingUpProps) {
       </div>
       <div
         style={{
-          font: "500 96px/.95 Spectral,serif",
+          font: "500 clamp(44px, 12vw, 96px)/.95 Fraunces,serif",
           color: "#f3f0e8",
           marginTop: 18,
           position: "relative",
           textAlign: "center",
+          maxWidth: "100%",
+          wordBreak: "break-word",
         }}
       >
         {word}
@@ -51,7 +43,7 @@ export default function LookingUp({ word }: LookingUpProps) {
       <div
         style={{
           position: "relative",
-          width: 300,
+          width: "min(300px, 70vw)",
           height: 4,
           marginTop: 24,
           background: "rgba(255,255,255,.08)",

@@ -4,22 +4,12 @@ interface NotFoundProps {
 
 export default function NotFound({ word }: NotFoundProps) {
   return (
-    <div
-      className="fade-up"
-      style={{
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <div className="screen fade-up">
       <div
         style={{
           position: "absolute",
-          width: 620,
-          height: 620,
+          width: "min(620px, 120vmin)",
+          height: "min(620px, 120vmin)",
           borderRadius: "50%",
           background: "radial-gradient(circle,rgba(224,138,106,.10),transparent 62%)",
           filter: "blur(8px)",
@@ -27,7 +17,7 @@ export default function NotFound({ word }: NotFoundProps) {
       />
       <div
         style={{
-          font: "400 26px 'Hanken Grotesk'",
+          font: "400 clamp(18px, 3.4vw, 26px) 'Hanken Grotesk'",
           color: "#9c998f",
           position: "relative",
         }}
@@ -38,13 +28,15 @@ export default function NotFound({ word }: NotFoundProps) {
         style={{
           position: "relative",
           marginTop: 24,
+          maxWidth: "100%",
           border: "1px solid rgba(224,138,106,.4)",
           borderRadius: 16,
-          padding: "14px 34px",
-          font: "500 68px Spectral",
+          padding: "14px clamp(20px, 5vw, 34px)",
+          font: "500 clamp(36px, 9vw, 68px) Fraunces",
           color: "#efece4",
           textDecoration: "line-through",
           textDecorationColor: "rgba(224,138,106,.7)",
+          wordBreak: "break-word",
         }}
       >
         “{word}”

@@ -9,7 +9,7 @@ interface RecordsProps {
 }
 
 const card: React.CSSProperties = {
-  flex: 1,
+  flex: "1 1 240px",
   background: "#131318",
   border: "1px solid rgba(255,255,255,.07)",
   borderRadius: 14,
@@ -29,17 +29,24 @@ export default function Records({
     <div
       className="fade-up"
       style={{
-        position: "absolute",
-        inset: 0,
+        position: "relative",
+        width: "100%",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
       }}
     >
       <TabHeader active="records" onTab={onTab} meta="this week ▾" />
-      <div style={{ flex: 1, overflowY: "auto", padding: 40 }}>
-        <div style={{ display: "flex", gap: 18 }}>
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "clamp(20px, 4vw, 40px)",
+        }}
+      >
+        <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
           <div style={card}>
-            <div style={{ font: "500 58px Spectral", color: "#f1eee6" }}>
+            <div style={{ font: "500 clamp(40px, 8vw, 58px) Fraunces", color: "#f1eee6" }}>
               {wordsThisWeek}
             </div>
             <div
@@ -53,7 +60,7 @@ export default function Records({
             </div>
           </div>
           <div style={card}>
-            <div style={{ font: "500 58px Spectral", color: "#f1eee6" }}>
+            <div style={{ font: "500 clamp(40px, 8vw, 58px) Fraunces", color: "#f1eee6" }}>
               {hoursRead.toFixed(1)}
               <span style={{ fontSize: 24, color: "#827f78" }}> h</span>
             </div>

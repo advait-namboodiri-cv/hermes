@@ -6,8 +6,8 @@ interface ListeningProps {
 
 const ring: React.CSSProperties = {
   position: "absolute",
-  width: 420,
-  height: 420,
+  width: "min(420px, 84vmin)",
+  height: "min(420px, 84vmin)",
   borderRadius: "50%",
   border: "1px solid rgba(150,175,205,.16)",
   animation: "ringpulse 4.5s ease-out infinite",
@@ -19,24 +19,14 @@ export default function Listening({
   error,
 }: ListeningProps) {
   return (
-    <div
-      className="fade-up"
-      style={{
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <div className="screen fade-up">
       <div style={ring} />
       <div style={{ ...ring, animationDelay: "2.2s" }} />
       <div
         style={{
           position: "absolute",
-          width: 460,
-          height: 460,
+          width: "min(460px, 92vmin)",
+          height: "min(460px, 92vmin)",
           borderRadius: "50%",
           background:
             "radial-gradient(circle at 50% 46%, rgba(150,178,208,.5), rgba(90,112,145,.16) 45%, transparent 70%)",
@@ -52,14 +42,20 @@ export default function Listening({
           alignItems: "center",
         }}
       >
-        <div style={{ font: "300 68px/1 'Hanken Grotesk'", color: "#eceae3" }}>
+        <div
+          style={{
+            font: "300 clamp(40px, 9vw, 68px)/1 'Hanken Grotesk'",
+            color: "#eceae3",
+          }}
+        >
           Listening
         </div>
         <div
           style={{
-            font: "400 22px 'Hanken Grotesk'",
+            font: "400 clamp(16px, 3vw, 22px) 'Hanken Grotesk'",
             color: "#94918a",
             marginTop: 8,
+            textAlign: "center",
           }}
         >
           Say{" "}

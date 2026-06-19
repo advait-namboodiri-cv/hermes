@@ -36,16 +36,17 @@ export default function Settings({ settings, voices, onChange }: SettingsProps) 
     <div
       className="fade-up"
       style={{
-        position: "absolute",
-        inset: 0,
+        position: "relative",
+        width: "100%",
+        height: "100%",
         overflowY: "auto",
-        padding: "40px 70px",
+        padding: "clamp(28px, 5vw, 40px) clamp(20px, 5vw, 70px)",
       }}
     >
       <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <div
           style={{
-            font: "400 44px Spectral,serif",
+            font: "400 clamp(32px, 6vw, 44px) Fraunces,serif",
             color: "#f2efe7",
             marginBottom: 36,
           }}
@@ -56,8 +57,8 @@ export default function Settings({ settings, voices, onChange }: SettingsProps) 
         {/* Recognition */}
         <div style={{ marginBottom: 36 }}>
           <div style={sectionLabel}>Recognition</div>
-          <div style={{ display: "flex", gap: 20 }}>
-            <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+            <div style={{ flex: "1 1 180px" }}>
               <div style={fieldLabel}>Wake word</div>
               <input
                 style={field}
@@ -65,7 +66,7 @@ export default function Settings({ settings, voices, onChange }: SettingsProps) 
                 onChange={(e) => onChange({ wakeWord: e.target.value })}
               />
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: "1 1 180px" }}>
               <div style={fieldLabel}>Stop word</div>
               <input
                 style={field}
@@ -73,7 +74,7 @@ export default function Settings({ settings, voices, onChange }: SettingsProps) 
                 onChange={(e) => onChange({ stopWord: e.target.value })}
               />
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: "1 1 180px" }}>
               <div style={fieldLabel}>End session word</div>
               <input
                 style={field}

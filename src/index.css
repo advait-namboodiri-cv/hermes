@@ -16,7 +16,7 @@
   --color-muted: #827f78;
   --color-faint: #5c594f;
 
-  --font-serif: "Spectral", Georgia, serif;
+  --font-serif: "Fraunces", Georgia, serif;
   --font-sans: "Hanken Grotesk", system-ui, sans-serif;
 }
 
@@ -38,14 +38,23 @@ body,
 body {
   overflow: hidden;
   font-family: var(--font-sans);
-  background: radial-gradient(
-    130% 120% at 50% -10%,
-    #18171c 0%,
-    #0b0b0e 58%,
-    #08080a 100%
-  );
+  background: #0c0c0f;
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
+}
+
+/* Fluid full-bleed screen: fills the body, centers content, grows + scrolls
+   (via the parent) when the content is taller than the viewport. */
+.screen {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 5vw, 56px);
 }
 
 /* ---- prototype keyframes ---- */

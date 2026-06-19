@@ -11,7 +11,6 @@ import Settings from "./components/screens/Settings";
 import Journal from "./components/screens/Journal";
 import Records from "./components/screens/Records";
 import { useHermes } from "./hooks/useHermes";
-import { BASE_H, BASE_W, useFitScale } from "./hooks/useFitScale";
 import {
   groupForJournal,
   loadEntries,
@@ -21,7 +20,6 @@ import {
 import type { Screen } from "./types";
 
 export default function App() {
-  const scale = useFitScale();
   const [screen, setScreen] = useState<Screen>("home");
   const {
     state,
@@ -73,44 +71,32 @@ export default function App() {
   return (
     <div
       style={{
-        position: "fixed",
-        inset: 0,
+        height: "100%",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
+        background: "#0c0c0f",
         overflow: "hidden",
       }}
     >
+      <Header
+        onHome={() => setScreen("home")}
+        onJournal={() => setScreen("journal")}
+        onSettings={() => setScreen("settings")}
+        sessionActive={state.listening}
+        onEndSession={() => {
+          endSession();
+          setScreen("home");
+        }}
+      />
       <div
         style={{
+          flex: 1,
           position: "relative",
-          flex: "none",
-          width: BASE_W,
-          height: BASE_H,
-          transform: `scale(${scale})`,
-          transformOrigin: "center",
-          background: "#0c0c0f",
-          border: "1px solid rgba(255,255,255,.07)",
-          borderRadius: 22,
-          boxShadow:
-            "0 50px 130px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.02) inset",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
+          overflowY: "auto",
+          overflowX: "hidden",
         }}
       >
-        <Header
-          onHome={() => setScreen("home")}
-          onJournal={() => setScreen("journal")}
-          onSettings={() => setScreen("settings")}
-          sessionActive={state.listening}
-          onEndSession={() => {
-            endSession();
-            setScreen("home");
-          }}
-        />
-        <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-          <CommandFlash command={state.lastCommand} seq={state.commandSeq} />
+        <CommandFlash command={state.lastCommand} seq={state.commandSeq} />
           {screen === "home" && (
             <Home
               begun={state.listening}
@@ -182,6 +168,5 @@ export default function App() {
           )}
         </div>
       </div>
-    </div>
   );
 }

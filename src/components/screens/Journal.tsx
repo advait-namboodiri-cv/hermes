@@ -12,8 +12,9 @@ export default function Journal({ groups, onTab, onReplay }: JournalProps) {
     <div
       className="fade-up"
       style={{
-        position: "absolute",
-        inset: 0,
+        position: "relative",
+        width: "100%",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
       }}
@@ -69,7 +70,7 @@ export default function Journal({ groups, onTab, onReplay }: JournalProps) {
               >
                 <div>
                   <div
-                    style={{ font: "500 22px Spectral", color: "#f1eee6" }}
+                    style={{ font: "500 22px Fraunces", color: "#f1eee6" }}
                   >
                     {r.word}
                   </div>

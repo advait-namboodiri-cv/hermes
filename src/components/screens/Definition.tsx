@@ -46,12 +46,13 @@ export default function Definition({
     <div
       className="fade-up"
       style={{
-        position: "absolute",
-        inset: 0,
+        position: "relative",
+        width: "100%",
+        minHeight: "100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        padding: "60px 70px",
+        padding: "clamp(28px, 5vw, 60px) clamp(22px, 5vw, 70px)",
       }}
     >
       <div
@@ -59,8 +60,8 @@ export default function Definition({
           position: "absolute",
           top: -120,
           right: -120,
-          width: 460,
-          height: 460,
+          width: "min(460px, 100vmin)",
+          height: "min(460px, 100vmin)",
           borderRadius: "50%",
           background: "radial-gradient(circle,rgba(216,177,90,.12),transparent 62%)",
           filter: "blur(10px)",
@@ -89,11 +90,13 @@ export default function Definition({
 
       <div
         style={{
-          font: "500 124px/.9 Spectral,serif",
+          font: "500 clamp(46px, 14vw, 124px)/.92 Fraunces,serif",
           color: "#f4f1e9",
           letterSpacing: "-.02em",
           marginTop: 18,
           position: "relative",
+          maxWidth: "100%",
+          wordBreak: "break-word",
         }}
       >
         {def.word}
@@ -110,7 +113,10 @@ export default function Definition({
       >
         {def.pronunciation && (
           <span
-            style={{ font: "italic 400 32px Spectral", color: "var(--accent)" }}
+            style={{
+              font: "italic 400 clamp(20px, 4vw, 32px) Fraunces",
+              color: "var(--accent)",
+            }}
           >
             {def.pronunciation}
           </span>
@@ -131,7 +137,7 @@ export default function Definition({
 
       <div
         style={{
-          font: "400 54px/1.16 'Hanken Grotesk'",
+          font: "400 clamp(24px, 6vw, 54px)/1.16 'Hanken Grotesk'",
           color: "#eae7de",
           maxWidth: 1050,
           marginTop: 26,
@@ -144,7 +150,7 @@ export default function Definition({
       {def.example && (
         <div
           style={{
-            font: "italic 400 38px/1.28 Spectral",
+            font: "italic 400 clamp(18px, 4.4vw, 38px)/1.28 Fraunces",
             color: "#9d9990",
             maxWidth: 980,
             marginTop: 22,
@@ -157,16 +163,17 @@ export default function Definition({
 
       <div
         style={{
-          position: "absolute",
-          left: 70,
-          right: 70,
-          bottom: 40,
+          position: "relative",
+          width: "100%",
+          marginTop: "clamp(28px, 5vw, 48px)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 14,
         }}
       >
-        <div style={{ display: "flex", gap: 12 }}>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           <button style={chip} onClick={onReplay}>
             ↺ “again”
           </button>
