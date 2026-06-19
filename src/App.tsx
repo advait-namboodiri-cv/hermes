@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "./components/Header";
 import Home from "./components/screens/Home";
 import Listening from "./components/screens/Listening";
+import Wake from "./components/screens/Wake";
 import type { Flow, Screen } from "./types";
 
 export default function App() {
@@ -53,6 +54,9 @@ export default function App() {
 
           {screen === "session" && flow === "listening" && (
             <Listening wakeWord={wakeWord} />
+          )}
+          {screen === "session" && flow === "wake" && (
+            <Wake wakeWord={wakeWord} />
           )}
         </div>
       </div>
