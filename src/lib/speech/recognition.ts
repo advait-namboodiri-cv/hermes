@@ -113,6 +113,32 @@ export class ContinuousRecognizer {
     return this.active;
   }
 
+  /**
+   * Tear down the current recognition turn and immediately open a fresh one.
+   * Used when speech playback starts: it gives the user's "stop" word a clean
+   * new buffer to land in instead of being appended to (and lost in) the echo
+   * of the audio currently playing.
+   */
+  kick() {
+    if (!this.active) return;
+    const Ctor = getCtor();
+    if (!Ctor) return;
+    if (this.restartTimer !== null) {
+      clearTimeout(this.restartTimer);
+      this.restartTimer = null;
+    }
+    if (this.rec) {
+      this.rec.onend = null;
+      try {
+        this.rec.abort();
+      } catch {
+        /* ignore */
+      }
+      this.rec = null;
+    }
+    this.spinUp(Ctor);
+  }
+
   private spinUp(Ctor: SpeechRecognitionCtor) {
     const rec = new Ctor();
     rec.lang = "en-US";
@@ -138,8 +164,9 @@ export class ContinuousRecognizer {
 
     rec.onend = () => {
       if (!this.active) return;
-      // The API ends turns on its own — restart to keep listening.
-      this.restartTimer = window.setTimeout(() => this.spinUp(Ctor), 250);
+      // The API ends turns on its own (and Chrome cuts it off while TTS plays)
+      // — restart quickly to minimize any deaf gap.
+      this.restartTimer = window.setTimeout(() => this.spinUp(Ctor), 120);
     };
 
     this.rec = rec;
@@ -148,7 +175,7 @@ export class ContinuousRecognizer {
     } catch {
       // start() throws if called too soon after a previous instance; retry.
       if (this.active) {
-        this.restartTimer = window.setTimeout(() => this.spinUp(Ctor), 400);
+        this.restartTimer = window.setTimeout(() => this.spinUp(Ctor), 200);
       }
     }
   }

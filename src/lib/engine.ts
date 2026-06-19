@@ -71,6 +71,7 @@ export class HermesEngine {
   private awaitingTarget = false;
   private awaitTimer: number | null = null;
   private notFoundTimer: number | null = null;
+  private listenWatchdog: number | null = null;
   private lastDefinition: Definition | null = null;
   private fetchAbort: AbortController | null = null;
   private lookupSeq = 0;
@@ -127,7 +128,7 @@ export class HermesEngine {
     this.stop();
   }
 
-  /** "Cipher" — stop speech and go back to listening. */
+  /** Stop word ("Halt") / click — stop speech and go back to listening. */
   cancelSpeech() {
     this.tts.cancel();
     this.signal("stop");
@@ -263,12 +264,40 @@ export class HermesEngine {
 
   private speak(text: string) {
     this.patch({ speaking: true });
+    // Open a fresh recognition turn alongside the audio and keep it alive so a
+    // spoken "stop" can barge in while the definition is being read.
+    this.recognizer.kick();
+    this.startListenWatchdog();
     this.tts.speak(text, {
       voiceURI: this.settings.voiceURI,
       rate: this.settings.speechRate,
-      onend: () => this.patch({ speaking: false }),
-      onerror: () => this.patch({ speaking: false }),
+      onend: () => {
+        this.patch({ speaking: false });
+        this.stopListenWatchdog();
+      },
+      onerror: () => {
+        this.patch({ speaking: false });
+        this.stopListenWatchdog();
+      },
     });
+  }
+
+  // While speech plays, Chrome tends to cut recognition off; this nudges it back
+  // up so the mic keeps getting listening windows for the stop word.
+  private startListenWatchdog() {
+    this.stopListenWatchdog();
+    this.listenWatchdog = window.setInterval(() => {
+      if (this.state.speaking && !this.recognizer.running) {
+        this.recognizer.start();
+      }
+    }, 600);
+  }
+
+  private stopListenWatchdog() {
+    if (this.listenWatchdog !== null) {
+      clearInterval(this.listenWatchdog);
+      this.listenWatchdog = null;
+    }
   }
 
   private toListening() {
@@ -294,6 +323,7 @@ export class HermesEngine {
     if (this.notFoundTimer !== null) clearTimeout(this.notFoundTimer);
     this.awaitTimer = null;
     this.notFoundTimer = null;
+    this.stopListenWatchdog();
   }
 
   private patch(part: Partial<EngineState>) {
