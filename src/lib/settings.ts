@@ -7,6 +7,7 @@ const KEY = "hermes.settings";
 export const DEFAULT_SETTINGS: Settings = {
   wakeWord: "Hermes",
   stopWord: "Cipher",
+  endWord: "Goodbye",
   fuzzyMatching: true,
   voiceURI: "",
   speechRate: 1,

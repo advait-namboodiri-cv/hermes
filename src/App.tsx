@@ -27,6 +27,7 @@ export default function App() {
     voices,
     updateSettings,
     start,
+    endSession,
     replay,
     readSentence,
     play,
@@ -51,6 +52,11 @@ export default function App() {
       state.flow === "notfound";
     if (active && prevFlow.current !== state.flow && screen !== "session") {
       setScreen("session");
+    }
+    // Session ended (e.g. "Goodbye") — return to the start screen.
+    const wasActive = prevFlow.current !== "idle";
+    if (state.flow === "idle" && wasActive) {
+      setScreen("home");
     }
     prevFlow.current = state.flow;
   }, [state.flow, screen]);
@@ -92,6 +98,11 @@ export default function App() {
           onHome={() => setScreen("home")}
           onJournal={() => setScreen("journal")}
           onSettings={() => setScreen("settings")}
+          sessionActive={state.listening}
+          onEndSession={() => {
+            endSession();
+            setScreen("home");
+          }}
         />
         <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
           <CommandFlash command={state.lastCommand} seq={state.commandSeq} />

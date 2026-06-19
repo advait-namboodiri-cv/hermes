@@ -9,6 +9,7 @@ import {
   hasReplayWord,
   hasSentenceWord,
   hasStopWord,
+  hasWord,
   isCommandWord,
   tokenize,
 } from "./speech/match";
@@ -25,7 +26,7 @@ export type EngineFlow =
   | "definition"
   | "notfound";
 
-export type Command = "wake" | "stop" | "again" | "sentence";
+export type Command = "wake" | "stop" | "again" | "sentence" | "end";
 
 export interface EngineState {
   flow: EngineFlow;
@@ -120,6 +121,12 @@ export class HermesEngine {
     });
   }
 
+  /** "Goodbye" / end-session button — close the mic and end the session. */
+  endSession() {
+    this.signal("end");
+    this.stop();
+  }
+
   /** "Cipher" — stop speech and go back to listening. */
   cancelSpeech() {
     this.tts.cancel();
@@ -154,7 +161,13 @@ export class HermesEngine {
   private onHeard(h: Heard) {
     this.patch({ transcript: h.transcript });
     const text = h.transcript;
-    const { wakeWord, stopWord, fuzzyMatching } = this.settings;
+    const { wakeWord, stopWord, endWord, fuzzyMatching } = this.settings;
+
+    // "Goodbye" ends the whole session from anywhere.
+    if (h.isFinal && endWord && hasWord(text, endWord, fuzzyMatching)) {
+      this.endSession();
+      return;
+    }
 
     // While a definition is up, listen for control commands.
     if (this.state.flow === "definition" || this.state.flow === "notfound") {

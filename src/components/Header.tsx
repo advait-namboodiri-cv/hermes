@@ -2,6 +2,8 @@ interface HeaderProps {
   onHome: () => void;
   onJournal: () => void;
   onSettings: () => void;
+  sessionActive?: boolean;
+  onEndSession?: () => void;
 }
 
 const iconBtn: React.CSSProperties = {
@@ -19,7 +21,13 @@ const iconBtn: React.CSSProperties = {
   transition: "background .15s ease, color .15s ease",
 };
 
-export default function Header({ onHome, onJournal, onSettings }: HeaderProps) {
+export default function Header({
+  onHome,
+  onJournal,
+  onSettings,
+  sessionActive,
+  onEndSession,
+}: HeaderProps) {
   const hover = (e: React.MouseEvent<HTMLButtonElement>, on: boolean) => {
     e.currentTarget.style.background = on ? "rgba(255,255,255,.05)" : "transparent";
     e.currentTarget.style.color = on ? "#efece4" : "#8f8c85";
@@ -54,7 +62,37 @@ export default function Header({ onHome, onJournal, onSettings }: HeaderProps) {
           HERMES
         </span>
       </div>
-      <div style={{ display: "flex", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {sessionActive && (
+          <button
+            onClick={onEndSession}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              height: 30,
+              padding: "0 13px",
+              marginRight: 4,
+              border: "1px solid rgba(224,138,106,.34)",
+              background: "rgba(224,138,106,.08)",
+              borderRadius: 8,
+              color: "#d39a82",
+              font: "500 13px 'Hanken Grotesk'",
+              cursor: "pointer",
+              transition: "background .15s ease, color .15s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(224,138,106,.16)";
+              e.currentTarget.style.color = "#e9a98f";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(224,138,106,.08)";
+              e.currentTarget.style.color = "#d39a82";
+            }}
+          >
+            <span style={{ fontSize: 11 }}>■</span> end session
+          </button>
+        )}
         <button
           aria-label="Journal"
           onClick={onJournal}

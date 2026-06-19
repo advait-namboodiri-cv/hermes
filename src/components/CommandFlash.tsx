@@ -10,6 +10,7 @@ const LABELS: Record<Command, { text: string; color: string }> = {
   stop: { text: "■ stopped", color: "#e08a6a" },
   again: { text: "↺ replaying", color: "#b69ce8" },
   sentence: { text: "¶ sentence", color: "#5ec8d8" },
+  end: { text: "✕ session ended", color: "#b6b3aa" },
 };
 
 interface CommandFlashProps {

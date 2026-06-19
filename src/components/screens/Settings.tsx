@@ -73,6 +73,14 @@ export default function Settings({ settings, voices, onChange }: SettingsProps) 
                 onChange={(e) => onChange({ stopWord: e.target.value })}
               />
             </div>
+            <div style={{ flex: 1 }}>
+              <div style={fieldLabel}>End session word</div>
+              <input
+                style={field}
+                value={settings.endWord}
+                onChange={(e) => onChange({ endWord: e.target.value })}
+              />
+            </div>
           </div>
 
           <div

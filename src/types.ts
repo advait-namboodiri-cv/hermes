@@ -33,6 +33,7 @@ export interface JournalEntry extends Definition {
 export interface Settings {
   wakeWord: string;
   stopWord: string;
+  endWord: string;
   fuzzyMatching: boolean;
   voiceURI: string; // empty = system default
   speechRate: number; // 0.5 - 2.0

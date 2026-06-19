@@ -118,13 +118,22 @@ export function findWake(
   return null;
 }
 
+/** True if the given command word appears anywhere in the transcript. */
+export function hasWord(
+  transcript: string,
+  word: string,
+  fuzzy: boolean
+): boolean {
+  return tokenize(transcript).some((tok) => isCommandWord(tok, word, fuzzy));
+}
+
 /** True if the stop word appears anywhere in the transcript. */
 export function hasStopWord(
   transcript: string,
   stopWord: string,
   fuzzy: boolean
 ): boolean {
-  return tokenize(transcript).some((tok) => isCommandWord(tok, stopWord, fuzzy));
+  return hasWord(transcript, stopWord, fuzzy);
 }
 
 /** True if any token loosely means "again" (replay the last definition). */

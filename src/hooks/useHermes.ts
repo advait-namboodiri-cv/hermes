@@ -54,6 +54,7 @@ export function useHermes() {
     updateSettings,
     start: useCallback(() => engine.start(), [engine]),
     stop: useCallback(() => engine.stop(), [engine]),
+    endSession: useCallback(() => engine.endSession(), [engine]),
     replay: useCallback(() => engine.replayLast(), [engine]),
     readSentence: useCallback(() => engine.readSentence(), [engine]),
     cancelSpeech: useCallback(() => engine.cancelSpeech(), [engine]),
