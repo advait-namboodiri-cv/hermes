@@ -3,11 +3,13 @@ import Header from "./components/Header";
 import Home from "./components/screens/Home";
 import Listening from "./components/screens/Listening";
 import Wake from "./components/screens/Wake";
+import LookingUp from "./components/screens/LookingUp";
 import type { Flow, Screen } from "./types";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [flow, setFlow] = useState<Flow>("listening");
+  const [lookupWord] = useState("");
   const wakeWord = "Hermes";
 
   return (
@@ -57,6 +59,9 @@ export default function App() {
           )}
           {screen === "session" && flow === "wake" && (
             <Wake wakeWord={wakeWord} />
+          )}
+          {screen === "session" && flow === "fetching" && (
+            <LookingUp word={lookupWord} />
           )}
         </div>
       </div>
