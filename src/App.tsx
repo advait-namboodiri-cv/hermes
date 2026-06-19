@@ -11,6 +11,7 @@ import Settings from "./components/screens/Settings";
 import Journal from "./components/screens/Journal";
 import Records from "./components/screens/Records";
 import { useHermes } from "./hooks/useHermes";
+import { BASE_H, BASE_W, useFitScale } from "./hooks/useFitScale";
 import {
   groupForJournal,
   loadEntries,
@@ -20,6 +21,7 @@ import {
 import type { Screen } from "./types";
 
 export default function App() {
+  const scale = useFitScale();
   const [screen, setScreen] = useState<Screen>("home");
   const {
     state,
@@ -71,19 +73,22 @@ export default function App() {
   return (
     <div
       style={{
-        minHeight: "100vh",
-        width: "100%",
+        position: "fixed",
+        inset: 0,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 40,
+        overflow: "hidden",
       }}
     >
       <div
         style={{
           position: "relative",
-          width: 1280,
-          height: 800,
+          flex: "none",
+          width: BASE_W,
+          height: BASE_H,
+          transform: `scale(${scale})`,
+          transformOrigin: "center",
           background: "#0c0c0f",
           border: "1px solid rgba(255,255,255,.07)",
           borderRadius: 22,

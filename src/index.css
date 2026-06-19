@@ -29,11 +29,14 @@
 }
 
 html,
-body {
+body,
+#root {
   margin: 0;
+  height: 100%;
 }
 
 body {
+  overflow: hidden;
   font-family: var(--font-sans);
   background: radial-gradient(
     130% 120% at 50% -10%,
