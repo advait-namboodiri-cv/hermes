@@ -30,6 +30,7 @@ export default function App() {
     endSession,
     replay,
     readSentence,
+    cancelSpeech,
     play,
   } = useHermes();
 
@@ -127,6 +128,7 @@ export default function App() {
               stopWord={settings.stopWord}
               onReplay={replay}
               onSentence={readSentence}
+              onStop={cancelSpeech}
             />
           )}
           {screen === "session" && state.flow === "notfound" && (

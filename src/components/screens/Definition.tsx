@@ -5,6 +5,7 @@ interface DefinitionProps {
   stopWord: string;
   onReplay?: () => void;
   onSentence?: () => void;
+  onStop?: () => void;
 }
 
 function Equalizer() {
@@ -41,6 +42,7 @@ export default function Definition({
   stopWord,
   onReplay,
   onSentence,
+  onStop,
 }: DefinitionProps) {
   return (
     <div
@@ -183,11 +185,22 @@ export default function Definition({
             </button>
           )}
         </div>
-        <span style={{ font: "400 15px 'Hanken Grotesk'", color: "#76736c" }}>
+        <button
+          onClick={onStop}
+          title="stop speaking"
+          style={{
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            font: "400 15px 'Hanken Grotesk'",
+            color: "#76736c",
+            padding: 0,
+          }}
+        >
           say{" "}
           <span style={{ color: "#cfccc3", fontWeight: 500 }}>“{stopWord}”</span> to
           stop
-        </span>
+        </button>
       </div>
     </div>
   );

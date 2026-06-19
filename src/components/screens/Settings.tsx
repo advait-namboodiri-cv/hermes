@@ -226,10 +226,10 @@ export default function Settings({ settings, voices, onChange }: SettingsProps) 
           <div style={sectionLabel}>Command colors</div>
           <div style={{ display: "flex", gap: 26, flexWrap: "wrap" }}>
             {[
-              { c: "#d8b15a", l: "“Hermes” wake" },
+              { c: "#d8b15a", l: `“${settings.wakeWord}” wake` },
               { c: "#5ec8d8", l: "speaking" },
               { c: "#b69ce8", l: "“again” replay" },
-              { c: "#e08a6a", l: "“Cipher” stop" },
+              { c: "#e08a6a", l: `“${settings.stopWord}” stop` },
             ].map((d) => (
               <div
                 key={d.l}
