@@ -1,9 +1,5 @@
 import TabHeader from "./TabHeader";
-
-export interface DayCount {
-  label: string;
-  count: number;
-}
+import type { DayCount } from "../../lib/journal/store";
 
 interface RecordsProps {
   wordsThisWeek: number;

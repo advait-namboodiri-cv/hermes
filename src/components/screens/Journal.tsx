@@ -1,17 +1,5 @@
 import TabHeader from "./TabHeader";
-
-export interface JournalRow {
-  id: string;
-  word: string;
-  gloss: string;
-  time: string;
-}
-
-export interface JournalGroup {
-  label: string;
-  meta: string;
-  rows: JournalRow[];
-}
+import type { JournalGroup } from "../../lib/journal/store";
 
 interface JournalProps {
   groups: JournalGroup[];
