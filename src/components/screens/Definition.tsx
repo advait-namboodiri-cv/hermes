@@ -46,7 +46,7 @@ export default function Definition({
 }: DefinitionProps) {
   return (
     <div
-      className="fade-up"
+      className="fade-up def-screen"
       style={{
         position: "relative",
         width: "100%",
@@ -54,7 +54,6 @@ export default function Definition({
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        padding: "clamp(28px, 5vw, 60px) clamp(22px, 5vw, 70px)",
       }}
     >
       <div
@@ -202,6 +201,59 @@ export default function Definition({
           stop
         </button>
       </div>
+
+      {/* Big, always-there fallback to stop speaking and get back to the page. */}
+      <button
+        className="back-orb"
+        onClick={onStop}
+        title="back to reading"
+        style={{
+          position: "absolute",
+          right: "clamp(24px, 3vw, 52px)",
+          top: "50%",
+          width: "clamp(124px, 15vmin, 168px)",
+          height: "clamp(124px, 15vmin, 168px)",
+          borderRadius: "50%",
+          border: "1px solid rgba(224,138,106,.5)",
+          background:
+            "radial-gradient(circle at 50% 38%, #e7916f, #c0573a 72%)",
+          color: "#2a120b",
+          boxShadow:
+            "0 18px 50px rgba(224,138,106,.35), 0 0 0 10px rgba(224,138,106,.06)",
+          cursor: "pointer",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+        }}
+      >
+        <span style={{ fontSize: "clamp(28px, 4vmin, 38px)", lineHeight: 1 }}>↩</span>
+        <span style={{ font: "600 13px 'Hanken Grotesk'", letterSpacing: ".02em" }}>
+          back to reading
+        </span>
+      </button>
+
+      <button
+        className="back-orb-mobile"
+        onClick={onStop}
+        style={{
+          marginTop: 22,
+          alignSelf: "stretch",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 10,
+          padding: "16px 22px",
+          borderRadius: 18,
+          border: "1px solid rgba(224,138,106,.5)",
+          background: "rgba(224,138,106,.14)",
+          color: "#e9a98f",
+          font: "600 16px 'Hanken Grotesk'",
+          cursor: "pointer",
+        }}
+      >
+        <span style={{ fontSize: 18 }}>↩</span> back to reading
+      </button>
     </div>
   );
 }

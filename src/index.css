@@ -127,6 +127,43 @@ body {
   animation: fadeUp 0.55s ease both;
 }
 
+/* Definition screen reserves room on the right for the back-to-reading orb. */
+.def-screen {
+  padding: clamp(28px, 5vw, 60px) clamp(22px, 5vw, 70px);
+}
+@keyframes orbBreathe {
+  0%,
+  100% {
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.04);
+  }
+}
+.back-orb {
+  animation: orbBreathe 3.4s ease-in-out infinite;
+  transition: filter 0.15s ease;
+}
+.back-orb:hover {
+  filter: brightness(1.07);
+}
+.back-orb-mobile {
+  display: none;
+}
+@media (min-width: 881px) {
+  .def-screen {
+    padding-right: clamp(190px, 17vw, 240px);
+  }
+}
+@media (max-width: 880px) {
+  .back-orb {
+    display: none !important;
+  }
+  .back-orb-mobile {
+    display: flex !important;
+  }
+}
+
 /* ---- speech-rate slider ---- */
 .rate-slider {
   -webkit-appearance: none;
