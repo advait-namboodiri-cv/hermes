@@ -5,6 +5,7 @@ import Listening from "./components/screens/Listening";
 import Wake from "./components/screens/Wake";
 import LookingUp from "./components/screens/LookingUp";
 import Definition from "./components/screens/Definition";
+import NotFound from "./components/screens/NotFound";
 import type { Definition as Def, Flow, Screen } from "./types";
 
 export default function App() {
@@ -68,6 +69,9 @@ export default function App() {
           )}
           {screen === "session" && flow === "definition" && def && (
             <Definition def={def} stopWord={stopWord} />
+          )}
+          {screen === "session" && flow === "notfound" && (
+            <NotFound word={lookupWord} />
           )}
         </div>
       </div>
