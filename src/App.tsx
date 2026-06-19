@@ -1,10 +1,13 @@
 import { useState } from "react";
 import Header from "./components/Header";
 import Home from "./components/screens/Home";
-import type { Screen } from "./types";
+import Listening from "./components/screens/Listening";
+import type { Flow, Screen } from "./types";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
+  const [flow, setFlow] = useState<Flow>("listening");
+  const wakeWord = "Hermes";
 
   return (
     <div
@@ -40,9 +43,16 @@ export default function App() {
         <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
           {screen === "home" && (
             <Home
-              onBegin={() => setScreen("session")}
+              onBegin={() => {
+                setScreen("session");
+                setFlow("listening");
+              }}
               resumeHint="resume last · 12 words, 47 min"
             />
+          )}
+
+          {screen === "session" && flow === "listening" && (
+            <Listening wakeWord={wakeWord} />
           )}
         </div>
       </div>
