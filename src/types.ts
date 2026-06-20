@@ -35,6 +35,8 @@ export interface Settings {
   stopWord: string;
   endWord: string;
   fuzzyMatching: boolean;
+  soundCues: boolean;
+  spokenConfirm: boolean;
   voiceURI: string; // empty = system default
   speechRate: number; // 0.5 - 2.0
 }

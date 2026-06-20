@@ -5,16 +5,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HermesEngine, type EngineState } from "../lib/engine";
 import { BrowserTts } from "../lib/tts/browserTts";
+import { BrowserCues } from "../lib/cues";
 import { loadSettings, saveSettings } from "../lib/settings";
 import type { TtsVoice } from "../lib/tts/types";
 import type { Definition, Settings } from "../types";
 
 export function useHermes() {
   const tts = useMemo(() => new BrowserTts(), []);
+  const cues = useMemo(() => new BrowserCues(), []);
   const [settings, setSettingsState] = useState<Settings>(() => loadSettings());
 
   const engine = useMemo(
-    () => new HermesEngine({ settings, tts }),
+    () => new HermesEngine({ settings, tts, cues }),
     // engine is created once; settings updates flow through updateSettings below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

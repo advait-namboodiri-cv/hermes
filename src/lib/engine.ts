@@ -16,6 +16,7 @@ import {
 import { fetchDefinition } from "./dictionary";
 import { appendEntry, newId } from "./journal/store";
 import type { TtsProvider } from "./tts/types";
+import type { CuePlayer, CueKind } from "./cues";
 import type { Definition, Settings } from "../types";
 
 export type EngineFlow =
@@ -47,6 +48,7 @@ const AWAIT_TARGET_MS = 9000;
 export interface EngineOptions {
   settings: Settings;
   tts: TtsProvider;
+  cues?: CuePlayer;
 }
 
 export class HermesEngine {
@@ -64,6 +66,7 @@ export class HermesEngine {
 
   private settings: Settings;
   private tts: TtsProvider;
+  private cues: CuePlayer | null;
   private recognizer: ContinuousRecognizer;
   private subscribers = new Set<(s: EngineState) => void>();
 
@@ -79,6 +82,7 @@ export class HermesEngine {
   constructor(opts: EngineOptions) {
     this.settings = opts.settings;
     this.tts = opts.tts;
+    this.cues = opts.cues ?? null;
     this.recognizer = new ContinuousRecognizer({
       onHeard: (h) => this.onHeard(h),
       onError: (e) => this.patch({ error: e }),
@@ -132,6 +136,7 @@ export class HermesEngine {
   cancelSpeech() {
     this.tts.cancel();
     this.signal("stop");
+    this.cue("stop");
     this.toListening();
   }
 
@@ -213,18 +218,25 @@ export class HermesEngine {
 
     if (hit.target && h.isFinal) {
       this.signal("wake");
+      this.cue("wake");
       this.startLookup(hit.target);
     } else {
       // Heard the wake word; show "Yes?" and wait for the word.
       this.signal("wake");
+      this.cue("wake");
       this.patch({ flow: "wake" });
-      if (h.isFinal && !hit.target) this.beginAwaitTarget();
+      if (h.isFinal && !hit.target) {
+        this.confirm("yes?");
+        this.beginAwaitTarget();
+      }
     }
   }
 
   private startLookup(word: string) {
     this.clearTimers();
     this.awaitingTarget = false;
+    // Spoken "got it" plays first; the definition is queued right after it.
+    this.confirm("got it.");
     const seq = ++this.lookupSeq;
     this.fetchAbort?.abort();
     this.fetchAbort = new AbortController();
@@ -250,11 +262,15 @@ export class HermesEngine {
   private onDefinition(def: Definition) {
     this.lastDefinition = def;
     appendEntry(def, this.sessionId);
+    this.cue("found");
     this.patch({ flow: "definition", definition: def, lookupWord: def.word });
-    this.speak(`${def.word}. ${def.definition}`);
+    // Queue behind the spoken "got it" so it isn't cut off.
+    this.speak(`${def.word}. ${def.definition}`, this.settings.spokenConfirm);
   }
 
   private onNotFound() {
+    this.cue("notfound");
+    this.confirm("not found.");
     this.patch({ flow: "notfound" });
     this.notFoundTimer = window.setTimeout(
       () => this.toListening(),
@@ -262,7 +278,7 @@ export class HermesEngine {
     );
   }
 
-  private speak(text: string) {
+  private speak(text: string, queue = false) {
     this.patch({ speaking: true });
     // Open a fresh recognition turn alongside the audio and keep it alive so a
     // spoken "stop" can barge in while the definition is being read.
@@ -271,6 +287,7 @@ export class HermesEngine {
     this.tts.speak(text, {
       voiceURI: this.settings.voiceURI,
       rate: this.settings.speechRate,
+      queue,
       onend: () => {
         this.patch({ speaking: false });
         this.stopListenWatchdog();
@@ -316,6 +333,21 @@ export class HermesEngine {
 
   private signal(cmd: Command) {
     this.patch({ lastCommand: cmd, commandSeq: this.state.commandSeq + 1 });
+  }
+
+  /** Play an earcon if sound cues are enabled. */
+  private cue(kind: CueKind) {
+    if (this.settings.soundCues) this.cues?.play(kind);
+  }
+
+  /** Speak a short spoken acknowledgement if confirmations are enabled. */
+  private confirm(text: string, queue = false) {
+    if (!this.settings.spokenConfirm) return;
+    this.tts.speak(text, {
+      voiceURI: this.settings.voiceURI,
+      rate: this.settings.speechRate,
+      queue,
+    });
   }
 
   private clearTimers() {

@@ -31,6 +31,80 @@ const field: React.CSSProperties = {
   outline: "none",
 };
 
+function ToggleRow({
+  title,
+  hint,
+  on,
+  onToggle,
+  topGap = 20,
+}: {
+  title: string;
+  hint: string;
+  on: boolean;
+  onToggle: () => void;
+  topGap?: number;
+}) {
+  return (
+    <div
+      style={{
+        marginTop: topGap,
+        border: "1px solid rgba(255,255,255,.07)",
+        background: "#131318",
+        borderRadius: 14,
+        padding: "18px 20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 16,
+      }}
+    >
+      <div>
+        <div style={{ font: "500 17px 'Hanken Grotesk'", color: "#f1eee6" }}>
+          {title}
+        </div>
+        <div
+          style={{
+            font: "400 13px 'Hanken Grotesk'",
+            color: "#76736c",
+            marginTop: 4,
+          }}
+        >
+          {hint}
+        </div>
+      </div>
+      <button
+        aria-label={`Toggle ${title}`}
+        onClick={onToggle}
+        style={{
+          flex: "none",
+          width: 50,
+          height: 28,
+          borderRadius: 14,
+          border: "none",
+          cursor: "pointer",
+          position: "relative",
+          background: on ? "var(--accent)" : "rgba(255,255,255,.12)",
+          boxShadow: on ? "0 0 18px rgba(216,177,90,.35)" : "none",
+          transition: "background .2s ease",
+        }}
+      >
+        <span
+          style={{
+            position: "absolute",
+            top: 3,
+            left: on ? 25 : 3,
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            background: "#f1eee6",
+            transition: "left .2s ease",
+          }}
+        />
+      </button>
+    </div>
+  );
+}
+
 export default function Settings({ settings, voices, onChange }: SettingsProps) {
   return (
     <div
@@ -84,65 +158,30 @@ export default function Settings({ settings, voices, onChange }: SettingsProps) 
             </div>
           </div>
 
-          <div
-            style={{
-              marginTop: 20,
-              border: "1px solid rgba(255,255,255,.07)",
-              background: "#131318",
-              borderRadius: 14,
-              padding: "18px 20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <div>
-              <div style={{ font: "500 17px 'Hanken Grotesk'", color: "#f1eee6" }}>
-                Fuzzy wake-word matching
-              </div>
-              <div
-                style={{
-                  font: "400 13px 'Hanken Grotesk'",
-                  color: "#76736c",
-                  marginTop: 4,
-                }}
-              >
-                catches near-misses like “homies” → “Hermes”
-              </div>
-            </div>
-            <button
-              aria-label="Toggle fuzzy matching"
-              onClick={() => onChange({ fuzzyMatching: !settings.fuzzyMatching })}
-              style={{
-                width: 50,
-                height: 28,
-                borderRadius: 14,
-                border: "none",
-                cursor: "pointer",
-                position: "relative",
-                background: settings.fuzzyMatching
-                  ? "var(--accent)"
-                  : "rgba(255,255,255,.12)",
-                boxShadow: settings.fuzzyMatching
-                  ? "0 0 18px rgba(216,177,90,.35)"
-                  : "none",
-                transition: "background .2s ease",
-              }}
-            >
-              <span
-                style={{
-                  position: "absolute",
-                  top: 3,
-                  left: settings.fuzzyMatching ? 25 : 3,
-                  width: 22,
-                  height: 22,
-                  borderRadius: "50%",
-                  background: "#f1eee6",
-                  transition: "left .2s ease",
-                }}
-              />
-            </button>
-          </div>
+          <ToggleRow
+            title="Fuzzy wake-word matching"
+            hint="catches near-misses like “homies” → “Hermes”"
+            on={settings.fuzzyMatching}
+            onToggle={() => onChange({ fuzzyMatching: !settings.fuzzyMatching })}
+          />
+        </div>
+
+        {/* Feedback */}
+        <div style={{ marginBottom: 36 }}>
+          <div style={sectionLabel}>Feedback</div>
+          <ToggleRow
+            title="Sound cues"
+            hint="soft tones for wake, found, and not-found — confirmation by ear"
+            on={settings.soundCues}
+            onToggle={() => onChange({ soundCues: !settings.soundCues })}
+            topGap={0}
+          />
+          <ToggleRow
+            title="Spoken confirmations"
+            hint="says “got it” when it hears your word, and acknowledges commands"
+            on={settings.spokenConfirm}
+            onToggle={() => onChange({ spokenConfirm: !settings.spokenConfirm })}
+          />
         </div>
 
         {/* Voice */}

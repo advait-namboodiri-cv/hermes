@@ -20,7 +20,7 @@ export class BrowserTts implements TtsProvider {
 
   speak(text: string, opts: SpeakOptions = {}) {
     if (!this.synth || !text) return;
-    this.cancel();
+    if (!opts.queue) this.cancel();
 
     const u = new SpeechSynthesisUtterance(text);
     u.rate = opts.rate ?? 1;

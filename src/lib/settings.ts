@@ -10,6 +10,8 @@ export const DEFAULT_SETTINGS: Settings = {
   stopWord: "Halt",
   endWord: "Goodbye",
   fuzzyMatching: true,
+  soundCues: true,
+  spokenConfirm: true,
   voiceURI: "",
   speechRate: 1,
 };

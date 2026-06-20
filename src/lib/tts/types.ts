@@ -16,6 +16,8 @@ export interface SpeakOptions {
   voiceURI?: string;
   /** 0.5–2.0, 1 = normal. */
   rate?: number;
+  /** Queue after current speech instead of cancelling it (e.g. ack → definition). */
+  queue?: boolean;
   /** Called once speech finishes naturally (not when cancelled). */
   onend?: () => void;
   /** Called if speech fails to play. */
