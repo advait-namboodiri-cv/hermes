@@ -3,7 +3,7 @@ import type { JournalGroup } from "../../lib/journal/store";
 
 interface JournalProps {
   groups: JournalGroup[];
-  onTab: (tab: "journal" | "records") => void;
+  onTab: (tab: "journal" | "records" | "review") => void;
   onReplay: (id: string) => void;
 }
 

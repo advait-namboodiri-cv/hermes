@@ -4,7 +4,8 @@ export type Screen =
   | "session"
   | "settings"
   | "journal"
-  | "records";
+  | "records"
+  | "review";
 
 // Voice-flow sub-state, meaningful while the session screen is shown.
 export type Flow =

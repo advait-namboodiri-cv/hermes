@@ -1,11 +1,13 @@
+type Tab = "journal" | "records" | "review";
+
 interface TabHeaderProps {
-  active: "journal" | "records";
-  onTab: (tab: "journal" | "records") => void;
+  active: Tab;
+  onTab: (tab: Tab) => void;
   meta: string;
 }
 
 export default function TabHeader({ active, onTab, meta }: TabHeaderProps) {
-  const tab = (key: "journal" | "records", label: string) => {
+  const tab = (key: Tab, label: string) => {
     const isActive = active === key;
     return (
       <button
@@ -48,6 +50,7 @@ export default function TabHeader({ active, onTab, meta }: TabHeaderProps) {
       <div style={{ display: "flex", gap: 26 }}>
         {tab("journal", "Journal")}
         {tab("records", "Records")}
+        {tab("review", "Review")}
       </div>
       <div
         style={{

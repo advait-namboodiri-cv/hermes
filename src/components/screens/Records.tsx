@@ -5,7 +5,7 @@ interface RecordsProps {
   wordsThisWeek: number;
   hoursRead: number;
   perDay: DayCount[];
-  onTab: (tab: "journal" | "records") => void;
+  onTab: (tab: "journal" | "records" | "review") => void;
 }
 
 const card: React.CSSProperties = {

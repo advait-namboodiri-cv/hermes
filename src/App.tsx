@@ -10,6 +10,7 @@ import NotFound from "./components/screens/NotFound";
 import Settings from "./components/screens/Settings";
 import Journal from "./components/screens/Journal";
 import Records from "./components/screens/Records";
+import Review from "./components/screens/Review";
 import { useHermes } from "./hooks/useHermes";
 import {
   groupForJournal,
@@ -172,6 +173,9 @@ export default function App() {
               perDay={records.perDay}
               onTab={(t) => setScreen(t)}
             />
+          )}
+          {screen === "review" && (
+            <Review onTab={(t) => setScreen(t)} onPlay={play} />
           )}
         </div>
       </div>
