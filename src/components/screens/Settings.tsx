@@ -1,9 +1,11 @@
+import { useState } from "react";
 import type { Settings as SettingsType } from "../../types";
 
 interface SettingsProps {
   settings: SettingsType;
   voices: { uri: string; label: string }[];
   onChange: (patch: Partial<SettingsType>) => void;
+  onResetProgress: () => void;
 }
 
 const sectionLabel: React.CSSProperties = {
@@ -105,7 +107,13 @@ function ToggleRow({
   );
 }
 
-export default function Settings({ settings, voices, onChange }: SettingsProps) {
+export default function Settings({
+  settings,
+  voices,
+  onChange,
+  onResetProgress,
+}: SettingsProps) {
+  const [confirmingReset, setConfirmingReset] = useState(false);
   return (
     <div
       className="fade-up"
@@ -287,6 +295,77 @@ export default function Settings({ settings, voices, onChange }: SettingsProps) 
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Danger zone */}
+        <div style={{ marginTop: 48 }}>
+          <div style={{ ...sectionLabel, color: "#c07556" }}>Danger zone</div>
+          <div
+            style={{
+              border: "1px solid rgba(224,138,106,.28)",
+              background: "rgba(224,138,106,.06)",
+              borderRadius: 14,
+              padding: "18px 20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 16,
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <div style={{ font: "500 17px 'Hanken Grotesk'", color: "#e9a98f" }}>
+                Delete all progress
+              </div>
+              <div
+                style={{
+                  font: "400 13px 'Hanken Grotesk'",
+                  color: "#9a7563",
+                  marginTop: 4,
+                  maxWidth: 460,
+                }}
+              >
+                {confirmingReset
+                  ? "This erases every word you’ve learned and resets Hermes to a brand-new account. This can’t be undone."
+                  : "Clears your journal, records, and settings saved in this browser — like starting over."}
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              {confirmingReset && (
+                <button
+                  onClick={() => setConfirmingReset(false)}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    font: "500 14px 'Hanken Grotesk'",
+                    color: "#827f78",
+                  }}
+                >
+                  cancel
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  if (confirmingReset) onResetProgress();
+                  else setConfirmingReset(true);
+                }}
+                style={{
+                  flex: "none",
+                  cursor: "pointer",
+                  font: "600 14px 'Hanken Grotesk'",
+                  padding: "11px 18px",
+                  borderRadius: 11,
+                  border: "1px solid rgba(224,138,106,.5)",
+                  background: confirmingReset ? "#b0432a" : "rgba(224,138,106,.1)",
+                  color: confirmingReset ? "#fdeee8" : "#e08a6a",
+                  transition: "background .15s ease, color .15s ease",
+                }}
+              >
+                {confirmingReset ? "Yes, delete everything" : "Delete all progress"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -17,6 +17,7 @@ import {
   recordsSummary,
   findEntry,
 } from "./lib/journal/store";
+import { clearAllProgress } from "./lib/reset";
 import type { Screen } from "./types";
 
 export default function App() {
@@ -148,6 +149,10 @@ export default function App() {
               settings={settings}
               voices={voices}
               onChange={updateSettings}
+              onResetProgress={() => {
+                clearAllProgress();
+                window.location.reload();
+              }}
             />
           )}
           {screen === "journal" && (
