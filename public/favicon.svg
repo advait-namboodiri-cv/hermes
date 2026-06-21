@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0c0c0f"/>
+  <circle cx="256" cy="238" r="180" fill="#d8b15a" fill-opacity="0.18"/>
+  <text x="256" y="300" text-anchor="middle" font-size="300" fill="#d8b15a"
+    font-family="'Apple Symbols','Segoe UI Symbol','Noto Sans Symbols2',sans-serif">☤</text>
+</svg>

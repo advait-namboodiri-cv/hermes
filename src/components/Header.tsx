@@ -4,6 +4,7 @@ interface HeaderProps {
   onSettings: () => void;
   sessionActive?: boolean;
   onEndSession?: () => void;
+  offline?: boolean;
 }
 
 const iconBtn: React.CSSProperties = {
@@ -27,6 +28,7 @@ export default function Header({
   onSettings,
   sessionActive,
   onEndSession,
+  offline,
 }: HeaderProps) {
   const hover = (e: React.MouseEvent<HTMLButtonElement>, on: boolean) => {
     e.currentTarget.style.background = on ? "rgba(255,255,255,.05)" : "transparent";
@@ -63,6 +65,33 @@ export default function Header({
         </span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {offline && (
+          <span
+            title="You're offline — previously looked-up words still work"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              height: 30,
+              padding: "0 12px",
+              marginRight: 4,
+              border: "1px solid rgba(255,255,255,.1)",
+              borderRadius: 8,
+              color: "#9c998f",
+              font: "500 12px 'Hanken Grotesk'",
+            }}
+          >
+            <span
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "#827f78",
+              }}
+            />
+            offline
+          </span>
+        )}
         {sessionActive && (
           <button
             onClick={onEndSession}

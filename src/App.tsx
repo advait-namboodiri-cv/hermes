@@ -12,6 +12,7 @@ import Journal from "./components/screens/Journal";
 import Records from "./components/screens/Records";
 import Review from "./components/screens/Review";
 import { useHermes } from "./hooks/useHermes";
+import { useOnline } from "./hooks/useOnline";
 import {
   groupForJournal,
   loadEntries,
@@ -22,6 +23,7 @@ import { clearAllProgress } from "./lib/reset";
 import type { Screen } from "./types";
 
 export default function App() {
+  const online = useOnline();
   const [screen, setScreen] = useState<Screen>("home");
   const {
     state,
@@ -90,6 +92,7 @@ export default function App() {
           endSession();
           setScreen("home");
         }}
+        offline={!online}
       />
       <div
         style={{
