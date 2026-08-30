@@ -47,8 +47,9 @@ export default defineConfig({
             },
           },
           {
-            // Dictionary lookups — cache hits so looked-up words work offline.
-            urlPattern: /^https:\/\/api\.dictionaryapi\.dev\/.*/i,
+            // Dictionary lookups (primary + fallback) — cache hits so
+            // looked-up words work offline.
+            urlPattern: /^https:\/\/(api\.dictionaryapi\.dev|api\.datamuse\.com)\/.*/i,
             handler: "StaleWhileRevalidate",
             options: {
               cacheName: "dictionary",
