@@ -7,6 +7,7 @@ import Wake from "./components/screens/Wake";
 import LookingUp from "./components/screens/LookingUp";
 import Definition from "./components/screens/Definition";
 import NotFound from "./components/screens/NotFound";
+import Unreachable from "./components/screens/Unreachable";
 import Settings from "./components/screens/Settings";
 import Journal from "./components/screens/Journal";
 import Records from "./components/screens/Records";
@@ -54,7 +55,8 @@ export default function App() {
       state.flow === "wake" ||
       state.flow === "fetching" ||
       state.flow === "definition" ||
-      state.flow === "notfound";
+      state.flow === "notfound" ||
+      state.flow === "unreachable";
     if (active && prevFlow.current !== state.flow && screen !== "session") {
       setScreen("session");
     }
@@ -138,6 +140,9 @@ export default function App() {
           )}
           {screen === "session" && state.flow === "notfound" && (
             <NotFound word={state.lookupWord} />
+          )}
+          {screen === "session" && state.flow === "unreachable" && (
+            <Unreachable word={state.lookupWord} />
           )}
           {/* If a session view is requested but flow is idle, show listening shell. */}
           {screen === "session" && state.flow === "idle" && (

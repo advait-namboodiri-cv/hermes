@@ -13,7 +13,7 @@ import {
   isCommandWord,
   tokenize,
 } from "./speech/match";
-import { fetchDefinition } from "./dictionary";
+import { fetchDefinition, DictionaryUnavailableError } from "./dictionary";
 import { appendEntry, newId } from "./journal/store";
 import type { TtsProvider } from "./tts/types";
 import type { CuePlayer, CueKind } from "./cues";
@@ -25,7 +25,8 @@ export type EngineFlow =
   | "wake"
   | "fetching"
   | "definition"
-  | "notfound";
+  | "notfound"
+  | "unreachable";
 
 export type Command = "wake" | "stop" | "again" | "sentence" | "end";
 
@@ -176,7 +177,11 @@ export class HermesEngine {
     }
 
     // While a definition is up, listen for control commands.
-    if (this.state.flow === "definition" || this.state.flow === "notfound") {
+    if (
+      this.state.flow === "definition" ||
+      this.state.flow === "notfound" ||
+      this.state.flow === "unreachable"
+    ) {
       if (hasStopWord(text, stopWord, fuzzyMatching)) {
         this.cancelSpeech();
         return;
@@ -255,7 +260,10 @@ export class HermesEngine {
       .catch((err) => {
         if (seq !== this.lookupSeq) return;
         if ((err as Error)?.name === "AbortError") return;
-        this.onNotFound();
+        // Every dictionary source failed — that's an outage, not a missing
+        // word, and it gets its own honest state.
+        if (err instanceof DictionaryUnavailableError) this.onUnreachable();
+        else this.onNotFound();
       });
   }
 
@@ -272,6 +280,16 @@ export class HermesEngine {
     this.cue("notfound");
     this.confirm("not found.");
     this.patch({ flow: "notfound" });
+    this.notFoundTimer = window.setTimeout(
+      () => this.toListening(),
+      NOTFOUND_RETURN_MS
+    );
+  }
+
+  private onUnreachable() {
+    this.cue("notfound");
+    this.confirm("the dictionary isn't responding.");
+    this.patch({ flow: "unreachable" });
     this.notFoundTimer = window.setTimeout(
       () => this.toListening(),
       NOTFOUND_RETURN_MS
